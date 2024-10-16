@@ -1,0 +1,14 @@
+[project]
+name = "comfyui-simplelogger"
+description = "A simple node to save your history in html file. I saves the WorkFlow with all it's input values so you can duplicate it later."
+version = "1.0.0"
+license = {file = "LICENSE"}
+
+[project.urls]
+Repository = "https://github.com/moustafa-nasr/ComfyUI-SimpleLogger"
+#  Used by Comfy Registry https://comfyregistry.org
+
+[tool.comfy]
+PublisherId = ""
+DisplayName = "ComfyUI-SimpleLogger"
+Icon = ""
