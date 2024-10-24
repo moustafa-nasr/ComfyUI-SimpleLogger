@@ -30,13 +30,13 @@ Search for `Logger` and select the one by `moustafa-nasr`
 
 Consider the following workflow of vision an image, and perform additional text processing with desired LLM. In the OllamaGenerate node set the prompt as input.
 
-![Step 1](misc/SimpleLogger_2.png)
+![Step 1](misc/Step_1.png)
 
 All the logs will be saved by date in folder
 > { your_ComfyUI_folder }/Logs
 
-![Step 2](misc/SimpleLogger_3.png)
+![Step 2](misc/Step_2.png)
 
 Workflow Data will be saved in a HTML format
 
-![Step 3](misc/SimpleLogger_4.png)
+![Step 3](misc/Step_3.png)
