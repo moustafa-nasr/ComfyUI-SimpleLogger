@@ -17,11 +17,11 @@ A simple node to save your history in html file. I saves the WorkFlow with all i
 
 ### Installation[method2] (Using ComfyUI-Manager only)
 
-Use the [ComfyUI-Manager](https://github.com/ltdrdata/ComfyUI-Manager) "Manager > Custom Node Manager":
+Using [ComfyUI-Manager](https://github.com/ltdrdata/ComfyUI-Manager) goto "Manager > Custom Node Manager"
 
 ![Step 1](misc/ComfyUI-Manager-Step_1.png)
 
-Search `Logger` and select the one by `moustafa-nasr`
+Search for `Logger` and select the one by `moustafa-nasr`
 
 ![Step 2](misc/ComfyUI-Manager-Step_2.png)
 
@@ -30,13 +30,13 @@ Search `Logger` and select the one by `moustafa-nasr`
 
 Consider the following workflow of vision an image, and perform additional text processing with desired LLM. In the OllamaGenerate node set the prompt as input.
 
-![Step 1](misc/SimpleLogger_2.PNG)
+![Step 1](misc/SimpleLogger_2.png)
 
 All the logs will be saved by date in folder
 > { your_ComfyUI_folder }/Logs
 
-![Step 2](misc/SimpleLogger_3.PNG)
+![Step 2](misc/SimpleLogger_3.png)
 
 Workflow Data will be saved in a HTML format
 
-![Step 3](misc/SimpleLogger_4.PNG)
+![Step 3](misc/SimpleLogger_4.png)
