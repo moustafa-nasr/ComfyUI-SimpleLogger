@@ -11,7 +11,9 @@ class LogImageNode:
     @classmethod
     def INPUT_TYPES(cls):
         return {
-            "required": { "image_in": ("IMAGE", {}), "log_title": ("STRING", {"default": "image #"}) },
+            "required": { "image_in": ("IMAGE", {}),
+             "title": ("STRING", {"default": "image #"}),
+             "description": ("STRING", {"multiline": True, "default": "image of somthing."}) },
             "hidden": {
                 "unique_id": "UNIQUE_ID",
                 "prompt": "PROMPT", 
@@ -23,7 +25,7 @@ class LogImageNode:
     CATEGORY = "Logger"
     FUNCTION = "loog"
 
-    def loog(self, image_in, unique_id, prompt,log_title):
+    def loog(self, image_in, unique_id, prompt, title, description):
         image_strings = []  # Array to hold base64 image strings
 
         try:
@@ -65,7 +67,12 @@ class LogImageNode:
         # Write the log entry to the dynamically named file
         with open(log_file_name, "a") as file:
             file.write('<br><br>')
-            file.write(f"<h2>[{current_time}] {log_title}</h2>")
+            if title:
+                file.write(f"<h2>[{current_time}] {title}</h2>")
+            else
+                file.write(f"<h2>[{current_time}]</h2>")
+            if description:
+                file.write(f"<p>{description}</>")
             # Output images in HTML format if found
             if image_strings:
                 for img_str in image_strings:
