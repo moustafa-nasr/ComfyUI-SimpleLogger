@@ -69,14 +69,16 @@ class LogImageNode:
             file.write('<br><br>')
             if title:
                 file.write(f"<h2>[{current_time}] {title}</h2>")
-            else
+            else:
                 file.write(f"<h2>[{current_time}]</h2>")
             if description:
-                file.write(f"<p>{description}</>")
+                file.write(f"<p>{description}</p><br>")
             # Output images in HTML format if found
+            file.write(f'<div style="display:flex; flex-direction: row;">')
             if image_strings:
                 for img_str in image_strings:
-                    file.write(f"<img style='display:block; width:100px;height:100px;' id='base64image' src='data:image/jpeg;base64,{img_str}' />")
+                    file.write(f"<img style='display:block; width:100px;height:100px; padding-right: 15px;' id='base64image' src='data:image/jpeg;base64,{img_str}' />")
+            file.write(f'</div>')
             file.write('<br>')
             file.write(prompt_json_to_html_table(prompt))
 
@@ -85,7 +87,7 @@ class LogImageNode:
 def prompt_json_to_html_table(json_data):
     # Start the HTML table
     html = '<table border="1" style="border-collapse: collapse; width: 100%;">'
-    html += '<tr><th>Node ID</th><th>Class Type</th><th>Inputs</th></tr>'
+    html += '<tr><th style="border-left: 1px solid #ddd;background-color: #ddd;" >Node ID</th><th style="border-left: 1px solid #ddd;background-color: #ddd;">Class Type</th><th style="border-left: 1px solid #ddd;background-color: #ddd;">Inputs</th></tr>'
     
     for node_id, details in json_data.items():
         class_type = details.get('class_type', 'N/A')
@@ -95,7 +97,7 @@ def prompt_json_to_html_table(json_data):
         inputs_str = ', '.join([f"{key}: {value}" for key, value in inputs.items()])
 
         # Add a row for each node
-        html += f'<tr><td>{node_id}</td><td>{class_type}</td><td>{inputs_str}</td></tr>'
+        html += f'<tr><td style="border-left: 1px solid #ddd;">{node_id}</td><td style="border-left: 1px solid #ddd;" >{class_type}</td><td style="border-left: 1px solid #ddd;">{inputs_str}</td></tr>'
     
     # End the HTML table
     html += '</table>'
