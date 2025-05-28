@@ -9,6 +9,6 @@ Repository = "https://github.com/moustafa-nasr/ComfyUI-SimpleLogger"
 #  Used by Comfy Registry https://comfyregistry.org
 
 [tool.comfy]
-PublisherId = ""
+PublisherId = "moustafa-nasr"
 DisplayName = "ComfyUI-SimpleLogger"
 Icon = ""
