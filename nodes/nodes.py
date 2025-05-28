@@ -5,15 +5,62 @@ from PIL import Image
 import io
 import base64
 import torch
+import os
+import argparse
+
+# Get ComfyUI's base directory
+def get_comfyui_base_dir():
+    """Get ComfyUI base directory, respecting --base-directory argument"""
+    # Parse command line arguments to find base directory
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--base-directory', type=str, default=None)
+    
+    # Parse known args to avoid conflicts with other ComfyUI arguments
+    try:
+        known_args, _ = parser.parse_known_args()
+        
+        if known_args.base_directory:
+            return os.path.abspath(known_args.base_directory)
+    except:
+        # If parsing fails, continue with fallback logic
+        pass
+    
+    # Fallback: try to find ComfyUI directory
+    # Look for ComfyUI in the current working directory or parent directories
+    current_dir = os.getcwd()
+    
+    # Check if we're already in ComfyUI directory
+    if os.path.exists(os.path.join(current_dir, 'main.py')) or \
+       os.path.exists(os.path.join(current_dir, 'server.py')) or \
+       os.path.exists(os.path.join(current_dir, 'nodes.py')):
+        return current_dir
+    
+    # Look for ComfyUI in parent directories
+    parent_dir = os.path.dirname(current_dir)
+    while parent_dir != current_dir:
+        if os.path.exists(os.path.join(parent_dir, 'main.py')) or \
+           os.path.exists(os.path.join(parent_dir, 'server.py')):
+            return parent_dir
+        current_dir = parent_dir
+        parent_dir = os.path.dirname(current_dir)
+    
+    # If not found, use current working directory
+    return os.getcwd()
 
 # Define a class for the custom node
 class LogImageNode:
     @classmethod
     def INPUT_TYPES(cls):
         return {
-            "required": { "image_in": ("IMAGE", {}),
-             "title": ("STRING", {"default": "image #"}),
-             "description": ("STRING", {"multiline": True, "default": "image of somthing."}) },
+            "required": { 
+                "image_in": ("IMAGE", {}),
+                "title": ("STRING", {"default": "image #"}),
+                "description": ("STRING", {"multiline": True, "default": "image of something."}) 
+            },
+            "optional": {
+                "custom_directory": ("STRING", {"default": ""}),
+                "save_to_output": ("BOOLEAN", {"default": True}),
+            },
             "hidden": {
                 "unique_id": "UNIQUE_ID",
                 "prompt": "PROMPT", 
@@ -25,7 +72,7 @@ class LogImageNode:
     CATEGORY = "Logger"
     FUNCTION = "loog"
 
-    def loog(self, image_in, unique_id, prompt, title, description):
+    def loog(self, image_in, unique_id, prompt, title, description, custom_directory="", save_to_output=True):
         image_strings = []  # Array to hold base64 image strings
 
         try:
@@ -56,16 +103,38 @@ class LogImageNode:
         except Exception as e:
             print(f"Error processing image: {e}")
 
+        # Get base directory
+        base_dir = get_comfyui_base_dir()
+        
+        # Determine output directory
+        if custom_directory:
+            # Use custom directory (can be relative or absolute)
+            if os.path.isabs(custom_directory):
+                output_dir = custom_directory
+            else:
+                output_dir = os.path.join(base_dir, custom_directory)
+        elif save_to_output:
+            # Use output directory with date structure (as requested in the issue)
+            current_date = datetime.datetime.now()
+            date_folder = current_date.strftime("%Y-%m")
+            output_dir = os.path.join(base_dir, "ComfyUI", "output", date_folder)
+        else:
+            # Use traditional logs directory
+            output_dir = os.path.join(base_dir, "logs")
+        
+        # Create directory if it doesn't exist
+        os.makedirs(output_dir, exist_ok=True)
+        
         # Get the current date to use in the log file name
         current_date = datetime.datetime.now().strftime("%Y-%m-%d")
-        log_file_name = f"logs/log_{current_date}.html"
+        log_file_name = os.path.join(output_dir, f"log_{current_date}.html")
         
         current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        # log_entry = f"[{current_time}] {prompt}\n"
-        # print(f"[Log Image]  [{current_time}] {prompt}\n")
+        
+        print(f"[Log Image] Saving to: {log_file_name}")
 
         # Write the log entry to the dynamically named file
-        with open(log_file_name, "a") as file:
+        with open(log_file_name, "a", encoding='utf-8') as file:
             file.write('<br><br>')
             if title:
                 file.write(f"<h2>[{current_time}] {title}</h2>")
@@ -137,3 +206,12 @@ def process_image(image):
     except Exception as e:
         print(f"[Log Image] Error processing image: {e}")
         return ''
+
+# Node mappings for ComfyUI
+NODE_CLASS_MAPPINGS = {
+    "LogImageNode": LogImageNode
+}
+
+NODE_DISPLAY_NAME_MAPPINGS = {
+    "LogImageNode": "Log Image Node"
+}
