@@ -1,7 +1,7 @@
 [project]
 name = "comfyui-simplelogger"
 description = "A simple node to save your history in html file. I saves the WorkFlow with all it's input values so you can duplicate it later."
-version = "1.0.0"
+version = "0.0.3"
 license = {file = "LICENSE"}
 
 [project.urls]
